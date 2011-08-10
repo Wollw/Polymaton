@@ -1,0 +1,4 @@
+Currently just loads 'boards000.json' in ./res/raw/ as the board to use.
+Currently just uses rules:
+		   Born:	0,5,6
+		Survive:	0,4,5
