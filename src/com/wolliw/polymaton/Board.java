@@ -10,12 +10,17 @@ import android.view.SurfaceView;
 
 import java.util.ArrayList;
 
+
+// The Board the game is played on.
 public class Board extends SurfaceView implements SurfaceHolder.Callback
 {
 	private BoardData boardData = null;
 
 	private Paint paintBorder = null;
 	private UpdateThread thread = null;
+
+	private boolean paused = false;
+
 	private int width = 0;
 	private int height = 0;
 
@@ -51,6 +56,10 @@ public class Board extends SurfaceView implements SurfaceHolder.Callback
 	// The main action happens here.  This calculates and updates the state
 	// of the cells for the next turn.  This is run from the update thread.
 	public void updateState() {
+		// Don't update if paused
+		if (this.paused)
+			return;
+
 		// Buffer for holding the results until we are ready
 		// to actually change the cells' states
 		ArrayList<Integer> nextStates = new ArrayList<Integer>();
@@ -117,6 +126,25 @@ public class Board extends SurfaceView implements SurfaceHolder.Callback
 			}
 			thread = null;
 		}
+	}
+
+	// methods for pausing/unpauses and related actions
+	public void pauseUnpause() {
+		if (this.paused)
+			this.paused = false;
+		else
+			this.paused = true;
+	}
+	public boolean isPaused() {
+		return this.paused;
+	}
+	
+	// methods for getings/setting the beats per minute
+	public int getBPM() {
+		return this.boardData.getBPM();
+	}
+	public void setBPM(int bpm) {
+		this.boardData.setBPM(bpm);
 	}
 
 	public void onDraw(Canvas canvas) {

@@ -1,7 +1,7 @@
 package com.wolliw.polymaton;
 
 import android.graphics.Canvas;
-import android.graphics.Paint;
+import android.util.Log;
 import android.view.SurfaceHolder;
 
 // Thread to update the cell state
@@ -10,9 +10,6 @@ public class UpdateThread extends Thread {
 	private boolean running = false;
 	private Board board = null;
 	private SurfaceHolder surfaceHolder = null;
-
-	private int bpm = 150;
-	private int sleepTime = 60000/bpm;
 
 	public UpdateThread(Board board) {
 		super();
@@ -29,6 +26,10 @@ public class UpdateThread extends Thread {
 		running = false;
 	}
 
+	public boolean isRunning() {
+		return running;
+	}
+
 	public void run() {
 		Canvas c = null;
 		while (running) {
@@ -42,8 +43,12 @@ public class UpdateThread extends Thread {
 						board.onDraw(c);
 					}
 				}
-				sleep(this.sleepTime);
+				int bpm = this.board.getBPM();
+				// Prevent division by zero.  Values under 1 will be unthrottled.
+				if (bpm > 0)
+					sleep(60000/bpm);
 			} catch (InterruptedException ie) {
+				Log.e("Poly","Error in thread trying to render frame.");
 			}
 			finally {
 				// Do this finally to keep Surface from

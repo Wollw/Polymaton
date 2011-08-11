@@ -1,6 +1,7 @@
 {
 	"name": "Pentamaton",
 	"scale": 0.7,
+	"speed_bpm": 120;
 	"cells":
 	[
 		{

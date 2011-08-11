@@ -3,9 +3,7 @@ package com.wolliw.polymaton;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.util.Log;
 
-import java.util.regex.*;
 import java.util.ArrayList;
 
 public class PolymatonCell extends Path {

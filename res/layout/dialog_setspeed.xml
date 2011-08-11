@@ -1,0 +1,20 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			  android:id="@+id/dialog_setspeed"
+			  android:orientation="vertical"
+			  android:layout_width="fill_parent"
+			  android:layout_height="fill_parent"
+			  android:layout_gravity="center"
+			  android:padding="10dp"
+			  >
+	<EditText android:id="@+id/dialog_setspeed_edittext"
+			  android:inputType="number"
+			  android:layout_width="fill_parent"
+			  android:layout_height="wrap_content"
+			  />
+	<Button android:id="@+id/dialog_setspeed_button_ok"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:text="OK"
+			android:onClick="onClickDialog"
+			/>
+</LinearLayout>

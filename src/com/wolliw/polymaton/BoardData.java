@@ -24,6 +24,7 @@ public class BoardData {
 	private Float originX = new Float(0.0);
 	private Float originY = new Float(0.0);
 	private Float scale = new Float(1.0);
+	private int speed_bpm = 100;
 
 	public BoardData(Context ctx, int res) {
 		// Open stream for board's data file
@@ -34,7 +35,6 @@ public class BoardData {
 		// read the file into a string buffer
 		StringBuffer buf = new StringBuffer();
 		try {
-			int i = 0;
 			while ((readLine = br.readLine()) != null) {
 				buf.append(readLine);
 			}
@@ -67,6 +67,10 @@ public class BoardData {
 				Double s = jsonObj.getDouble("scale");
 				this.scale = new Float(s.floatValue());
 			}
+			// get speed if defined
+			if (jsonObj.has("speed_bpm")) {
+				this.speed_bpm = jsonObj.getInt("speed_bpm");
+			}
 			// load the cells' data
 			JSONArray jsonCellArray = null;
 			for (int i = 0; i < jsonArr.length(); i++) {
@@ -98,6 +102,14 @@ public class BoardData {
 			Log.e("Poly","Error building point arrays from JSON data.");
 		}
 
+	}
+
+	//methods for gettings/setting beats per minute
+	public int getBPM() {
+		return this.speed_bpm;
+	}
+	public void setBPM(int bpm) {
+		this.speed_bpm = bpm;
 	}
 
 	// Get a cell by index
