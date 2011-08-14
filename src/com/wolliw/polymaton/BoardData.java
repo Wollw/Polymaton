@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class BoardData {
 	private InputStream is = null;
@@ -19,12 +20,21 @@ public class BoardData {
 	private JSONObject jsonObj = null;
 	private JSONArray jsonArr = null;
 
-	private ArrayList<PolymatonCell> cells = null;
+	private HashMap<Integer, PolymatonCell> cells = null;
 
 	private Float originX = new Float(0.0);
 	private Float originY = new Float(0.0);
 	private Float scale = new Float(1.0);
 	private int speed_bpm = 100;
+
+
+	// Temporary, rules should be in configurable
+	private boolean[] rulesSurvive =
+		{true,false,false,false,true,true,
+		false,false,false,false,false};
+	private boolean[] rulesBorn =
+		{true,false,false,false,false,
+		true,true,false,false,false,false};
 
 	public BoardData(Context ctx, int res) {
 		// Open stream for board's data file
@@ -46,7 +56,7 @@ public class BoardData {
 
 		// Parse the json into the board data
 		try {
-			cells = new ArrayList<PolymatonCell>();
+			cells = new HashMap<Integer, PolymatonCell>();
 			jsonObj = new JSONObject(buf.toString());
 			jsonArr = jsonObj.getJSONArray("cells");
 		} catch (Exception e) {
@@ -76,7 +86,14 @@ public class BoardData {
 			for (int i = 0; i < jsonArr.length(); i++) {
 				jsonObj = jsonArr.getJSONObject(i);
 
-				// First get the coordinates
+				// Skip this id if it doesn't exists
+				if (jsonObj == null)
+					continue;
+
+				//Get the cell's identification (not always the json array index!)
+				int id = jsonObj.getInt("id");
+	
+				// then get the coordinates
 				jsonCellArray = jsonObj.getJSONArray("points");
 				int len = jsonCellArray.length();
 				ArrayList<Float> points = new ArrayList<Float>();
@@ -90,12 +107,13 @@ public class BoardData {
 				len = jsonCellArray.length();
 				ArrayList<Integer> neighbors = new ArrayList<Integer>();
 				for (int j = 0; j < len; j++) {
-					Integer id = jsonCellArray.getInt(j);
-					neighbors.add(new Integer(id));
+					Integer nid = jsonCellArray.getInt(j);
+					neighbors.add(new Integer(nid));
 				}
 
 				// Create the cell
-				cells.add(new PolymatonCell(points,neighbors));
+				cells.put(new Integer(id),new PolymatonCell(points,neighbors));
+				Log.d("Poly",id+"");
 
 			}
 		} catch (Exception e) {
@@ -103,6 +121,54 @@ public class BoardData {
 		}
 
 	}
+
+	// The main action happens here.  This calculates and updates the state
+	// of the cells for the next turn.  This is run from the update thread.
+	public void updateData() {
+
+		// Buffer for holding the results until we are ready
+		// to actually change the cells' states
+		HashMap<Integer,Integer> nextStates = new HashMap<Integer,Integer>();
+
+		PolymatonCell cell = null;
+
+		for (int i : cells.keySet()) {
+			int livingNeighbors = 0;
+			cell = this.getCell(i);
+			for (int j = 0; j < cell.neighborCount(); j++) {
+				int ni = cell.getNeighborId(j);
+				if (this.getCell(ni).isAlive())
+					livingNeighbors++;
+			}
+
+			// Apply the rules
+			if (cell.isAlive()) {
+				if (this.rulesSurvive[livingNeighbors])
+					nextStates.put(i,1);
+				else
+					nextStates.put(i,0);
+			} else {
+				if (this.rulesBorn[livingNeighbors])
+					nextStates.put(i,1);
+				else
+					nextStates.put(i,0);
+			}
+
+		}
+		// Apply the changes to the cells themselves
+		for (int i : nextStates.keySet()) {
+			switch (nextStates.get(i)) {
+				case 1:
+					this.getCell(i).makeLive();
+					break;
+				case 0:
+					this.getCell(i).makeDead();
+					break;
+			}
+		}
+
+	}
+
 
 	//methods for gettings/setting beats per minute
 	public int getBPM() {
@@ -112,9 +178,9 @@ public class BoardData {
 		this.speed_bpm = bpm;
 	}
 
-	// Get a cell by index
-	public int getCellCount() {
-		return this.cells.size();
+	// return a copy (i think?) of the internal cell HashMap 
+	public HashMap<Integer,PolymatonCell> getCells() {
+		return this.cells;
 	}
 
 	// get x and y coord to offset canvas
@@ -129,8 +195,8 @@ public class BoardData {
 	}
 
 	// Get a cell by index
-	public PolymatonCell getCell(int i) {
-		return this.cells.get(i);
+	public PolymatonCell getCell(int id) {
+		return this.cells.get(id);
 	}
 
 }

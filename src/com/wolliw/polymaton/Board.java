@@ -9,6 +9,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 // The Board the game is played on.
@@ -19,27 +20,23 @@ public class Board extends SurfaceView implements SurfaceHolder.Callback
 	private Paint paintBorder = null;
 	private UpdateThread thread = null;
 
-	private boolean paused = false;
+	private HashMap<Integer,PolymatonCell> cellsToDraw = null;
+
+	private boolean paused = true;
 
 	private int width = 0;
 	private int height = 0;
-
-	// Temporary, rules should be in configurable
-	private boolean[] rulesSurvive =
-		{true,false,false,false,true,true,
-		false,false,false,false,false};
-	private boolean[] rulesBorn =
-		{true,false,false,false,false,
-		true,true,false,false,false,false};
 
 	public Board(Context ctx) {
 		super(ctx);
 
 		this.boardData = new BoardData(ctx, R.raw.board000);
 
-		this.boardData.getCell(18).changeState();
-		this.boardData.getCell(19).changeState();
-		this.boardData.getCell(20).changeState();
+		this.boardData.getCell(6).changeState();
+		this.boardData.getCell(7).changeState();
+		this.boardData.getCell(8).changeState();
+		this.boardData.getCell(9).changeState();
+		this.boardData.getCell(10).changeState();
 
 		this.paintBorder = new Paint();
 		this.paintBorder.setColor(Color.BLACK);
@@ -53,53 +50,13 @@ public class Board extends SurfaceView implements SurfaceHolder.Callback
 
 	}
 
-	// The main action happens here.  This calculates and updates the state
-	// of the cells for the next turn.  This is run from the update thread.
+	// Called each frame.  calculate the next frame if not paused.
 	public void updateState() {
 		// Don't update if paused
 		if (this.paused)
 			return;
 
-		// Buffer for holding the results until we are ready
-		// to actually change the cells' states
-		ArrayList<Integer> nextStates = new ArrayList<Integer>();
-
-		PolymatonCell cell = null;
-		for (int i = 0; i < this.boardData.getCellCount(); i++) {
-			int livingNeighbors = 0;
-			cell = this.boardData.getCell(i);
-			for (int j = 0; j < cell.neighborCount(); j++) {
-				int ni = cell.getNeighborId(j);
-				if (this.boardData.getCell(ni).isAlive())
-					livingNeighbors++;
-			}
-
-			// Apply the rules
-			if (cell.isAlive()) {
-				if (this.rulesSurvive[livingNeighbors])
-					nextStates.add(i,1);
-				else
-					nextStates.add(i,0);
-			} else {
-				if (this.rulesBorn[livingNeighbors])
-					nextStates.add(i,1);
-				else
-					nextStates.add(i,0);
-			}
-
-		}
-		// Apply the changes to the cells themselves
-		for (int j = 0; j < nextStates.size(); j++) {
-			switch (nextStates.get(j)) {
-				case 1:
-					this.boardData.getCell(j).makeLive();
-					break;
-				case 0:
-					this.boardData.getCell(j).makeDead();
-					break;
-			}
-		}
-
+		this.boardData.updateData();
 	}
 
 	public void startUpdateThread() {
@@ -155,7 +112,9 @@ public class Board extends SurfaceView implements SurfaceHolder.Callback
 					 this.width/2,this.height/2);
 		canvas.translate(this.width/2, this.height/2);
 		canvas.drawColor(Color.BLACK);
-		for (int i = 0; i < this.boardData.getCellCount(); i++) {
+
+		cellsToDraw = this.boardData.getCells();
+		for (int i : cellsToDraw.keySet()) {
 			canvas.drawPath(this.boardData.getCell(i),
 							this.boardData.getCell(i).getPaint());
 			canvas.drawPath(this.boardData.getCell(i), paintBorder);

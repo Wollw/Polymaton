@@ -15,7 +15,6 @@ public class PolymatonCell extends Path {
 	private ArrayList<Integer> neighbors = null;
 
 	public PolymatonCell(ArrayList<Float> p, ArrayList<Integer> n) {
-
 		// Setup paints
 		this.paintLive = new Paint();
 		this.paintLive.setColor(Color.rgb(0xD1,0xE2,0x31));
@@ -40,7 +39,7 @@ public class PolymatonCell extends Path {
 			}
 		}
 		this.lineTo(p.get(0),p.get(1));
-
+	
 		// Add the neighboring cell ids to the neighbor list
 		neighbors = new ArrayList<Integer>();
 		for (int i = 0; i < n.size(); i++) {
