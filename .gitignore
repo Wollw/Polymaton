@@ -3,3 +3,4 @@ gen/
 build.xml
 proguard.cfg
 .DS_Store
+.settings/
