@@ -1,20 +1,20 @@
 package com.wolliw.polymaton;
 
 import android.content.Context;
+import android.os.Environment;
 import android.util.Log;
 
 import org.json.JSONObject;
 import org.json.JSONArray;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class BoardData {
-	private InputStream is = null;
 	private BufferedReader br = null;
 
 	private JSONObject jsonObj = null;
@@ -27,28 +27,26 @@ public class BoardData {
 	private Float scale = new Float(1.0);
 	private int speed_bpm = 100;
 
+	private ArrayList<Boolean> rulesBorn = null;
+	private ArrayList<Boolean> rulesSurvive = null;
+	private HashMap<Integer,Boolean> initialState = null;
 
-	// Temporary, rules should be in configurable
-	private boolean[] rulesSurvive =
-		{true,false,false,false,true,true,
-		false,false,false,false,false};
-	private boolean[] rulesBorn =
-		{true,false,false,false,false,
-		true,true,false,false,false,false};
-
-	public BoardData(Context ctx, int res) {
+	public BoardData(Context ctx, String fileName) {
 		// Open stream for board's data file
-		is = ctx.getResources().openRawResource(res);
-		br = new BufferedReader(new InputStreamReader(is));
+		String baseDir = Environment.getExternalStorageDirectory().getAbsolutePath();
+		String filePath = baseDir+File.separator+"Polymaton/"+fileName;
+		Log.d("Poly",filePath);
+		File file = new File(filePath);
 		String readLine = null;
 
 		// read the file into a string buffer
 		StringBuffer buf = new StringBuffer();
 		try {
+			br = new BufferedReader(new FileReader(file));
 			while ((readLine = br.readLine()) != null) {
 				buf.append(readLine);
 			}
-			is.close();
+			Log.d("Poly",buf.toString());
 			br.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -60,6 +58,7 @@ public class BoardData {
 			jsonObj = new JSONObject(buf.toString());
 			jsonArr = jsonObj.getJSONArray("cells");
 		} catch (Exception e) {
+			Log.d("Poly",buf.toString());
 			Log.e("Poly","Error reading JSON data.");
 		}
 		// create this board
@@ -81,20 +80,54 @@ public class BoardData {
 			if (jsonObj.has("speed_bpm")) {
 				this.speed_bpm = jsonObj.getInt("speed_bpm");
 			}
+			
+			// load the rules
+			if (jsonObj.has("rules_born")) {
+				rulesBorn = new ArrayList<Boolean>();
+				JSONArray ja = jsonObj.getJSONArray("rules_born");
+				for (int i=0;i<ja.length();i++) { 
+					this.rulesBorn.add(ja.getBoolean(i)); 
+				}
+			}
+			if (jsonObj.has("rules_survive")) {
+				rulesSurvive = new ArrayList<Boolean>();
+				JSONArray ja = jsonObj.getJSONArray("rules_survive");
+				for (int i=0;i<ja.length();i++) { 
+					this.rulesSurvive.add(ja.getBoolean(i)); 
+				}
+			}
+
+			// load the initial life state of the cells
+			if (jsonObj.has("initial_state")) {
+				initialState = new HashMap<Integer,Boolean>();
+				JSONArray ja = jsonObj.getJSONArray("initial_state");
+				Boolean b;
+				Integer id;
+				for (int i=0;i<ja.length();i+=2) { 
+					id = ja.getInt(i);
+					if (ja.getInt(i+1) != 0)
+						b = true;
+					else
+						b = false;
+					this.initialState.put(id, b);
+				}
+				Log.d("Poly",initialState.toString());
+			}
+
 			// load the cells' data
 			JSONArray jsonCellArray = null;
 			for (int i = 0; i < jsonArr.length(); i++) {
-				jsonObj = jsonArr.getJSONObject(i);
+				JSONObject jsonCellObj = jsonArr.getJSONObject(i);
 
 				// Skip this id if it doesn't exists
-				if (jsonObj == null)
+				if (jsonCellObj == null)
 					continue;
 
 				//Get the cell's identification (not always the json array index!)
-				int id = jsonObj.getInt("id");
+				int id = jsonCellObj.getInt("id");
 	
 				// then get the coordinates
-				jsonCellArray = jsonObj.getJSONArray("points");
+				jsonCellArray = jsonCellObj.getJSONArray("points");
 				int len = jsonCellArray.length();
 				ArrayList<Float> points = new ArrayList<Float>();
 				for (int j = 0; j < len; j++) {
@@ -103,7 +136,7 @@ public class BoardData {
 				}
 
 				// Next get the cell neighbors list
-				jsonCellArray = jsonObj.getJSONArray("neighbors");
+				jsonCellArray = jsonCellObj.getJSONArray("neighbors");
 				len = jsonCellArray.length();
 				ArrayList<Integer> neighbors = new ArrayList<Integer>();
 				for (int j = 0; j < len; j++) {
@@ -113,9 +146,14 @@ public class BoardData {
 
 				// Create the cell
 				cells.put(new Integer(id),new PolymatonCell(points,neighbors));
-				Log.d("Poly",id+"");
+
+				if (initialState != null)
+					if (initialState.get(id))
+						this.getCell(id).makeLive();
 
 			}
+
+
 		} catch (Exception e) {
 			Log.e("Poly","Error building point arrays from JSON data.");
 		}
@@ -143,12 +181,12 @@ public class BoardData {
 
 			// Apply the rules
 			if (cell.isAlive()) {
-				if (this.rulesSurvive[livingNeighbors])
+				if (this.rulesSurvive.get(livingNeighbors))
 					nextStates.put(i,1);
 				else
 					nextStates.put(i,0);
 			} else {
-				if (this.rulesBorn[livingNeighbors])
+				if (this.rulesBorn.get(livingNeighbors))
 					nextStates.put(i,1);
 				else
 					nextStates.put(i,0);
