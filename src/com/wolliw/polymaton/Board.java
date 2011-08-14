@@ -30,13 +30,7 @@ public class Board extends SurfaceView implements SurfaceHolder.Callback
 	public Board(Context ctx) {
 		super(ctx);
 
-		this.boardData = new BoardData(ctx, R.raw.board000);
-
-		this.boardData.getCell(6).changeState();
-		this.boardData.getCell(7).changeState();
-		this.boardData.getCell(8).changeState();
-		this.boardData.getCell(9).changeState();
-		this.boardData.getCell(10).changeState();
+		this.boardData = new BoardData(ctx, "default.json");
 
 		this.paintBorder = new Paint();
 		this.paintBorder.setColor(Color.BLACK);
