@@ -25,6 +25,15 @@ public class BoardData {
 	private Float originX = new Float(0.0);
 	private Float originY = new Float(0.0);
 	private Float scale = new Float(1.0);
+	private Float width = new Float(0.0);
+	private Float height = new Float(0.0);
+	private Float distFromOriginX = new Float(0.0);
+	private Float distFromOriginY = new Float(0.0);
+	// largest and smallest points in set.  used to calculate scale
+	private Float max_x = new Float(0.0);
+	private Float min_x = new Float(0.0);
+	private Float max_y = new Float(0.0);
+	private Float min_y = new Float(0.0);
 	private int speed_bpm = 100;
 
 	private ArrayList<Boolean> rulesBorn = null;
@@ -63,14 +72,6 @@ public class BoardData {
 		}
 		// create this board
 		try {
-			// get a defined origin if it exists
-			if (jsonObj.has("origin")) {
-				JSONArray ja = jsonObj.getJSONArray("origin");
-				Double x = ja.getDouble(0);
-				Double y = ja.getDouble(1);
-				this.originX = new Float(x.floatValue());
-				this.originY = new Float(y.floatValue());
-			}
 			// get scale if defined
 			if (jsonObj.has("scale")) {
 				Double s = jsonObj.getDouble("scale");
@@ -131,8 +132,24 @@ public class BoardData {
 				int len = jsonCellArray.length();
 				ArrayList<Float> points = new ArrayList<Float>();
 				for (int j = 0; j < len; j++) {
-					Double dbl = jsonCellArray.getDouble(j);
-					points.add(new Float(dbl.floatValue()));
+					Float f = new Float(new Double(jsonCellArray.getDouble(j)).floatValue());
+					points.add(f);
+					
+					// keep track of max and min x and y values for scaling
+					switch (j%2) {
+						case 0:
+							if (f > max_x)
+								this.max_x = f;
+							if (f < min_x)
+								this.min_x = f;
+							break;
+						case 1:
+							if (f > max_y)
+								this.max_y = f;
+							if (f < min_y)
+								this.min_y = f;
+							break;
+					}
 				}
 
 				// Next get the cell neighbors list
@@ -158,8 +175,44 @@ public class BoardData {
 			Log.e("Poly","Error building point arrays from JSON data.");
 		}
 
+		// Calculate width and height of board in pixels
+		this.width = Math.abs(this.min_x)+Math.abs(this.max_x);
+		this.height = Math.abs(this.min_y)+Math.abs(this.max_y);
+		this.distFromOriginX = Math.abs(this.min_x) > Math.abs(this.max_x)
+								? Math.abs(this.min_x) : Math.abs(this.max_x);
+		this.distFromOriginY = Math.abs(this.min_y) > Math.abs(this.max_y)
+								? Math.abs(this.min_y) : Math.abs(this.max_y);
+
 	}
 
+	// Get the dimensions of the board (distance between extremes of
+	// x and y axes
+	public float getWidth() {
+		return this.width;
+	}
+	public float getHeight() {
+		return this.height;
+	}
+	// Distances from origin used to calculte scale factor
+	public float getDistOriginX() {
+		return this.distFromOriginX;
+	}
+	public float getDistOriginY() {
+		return this.distFromOriginY;
+	}
+	// Information about the bounds of the board
+	public float getMaxX() {
+		return this.max_x;
+	}
+	public float getMinX() {
+		return this.min_x;
+	}
+	public float getMaxY() {
+		return this.max_y;
+	}
+	public float getMinY() {
+		return this.min_y;
+	}
 	// The main action happens here.  This calculates and updates the state
 	// of the cells for the next turn.  This is run from the update thread.
 	public void updateData() {
@@ -221,13 +274,6 @@ public class BoardData {
 		return this.cells;
 	}
 
-	// get x and y coord to offset canvas
-	public float getOriginX() {
-		return this.originX.floatValue();
-	}
-	public float getOriginY() {
-		return this.originY.floatValue();
-	}
 	public float getScale() {
 		return this.scale.floatValue();
 	}

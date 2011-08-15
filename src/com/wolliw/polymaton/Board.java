@@ -101,9 +101,10 @@ public class Board extends SurfaceView implements SurfaceHolder.Callback
 	public void onDraw(Canvas canvas) {
 		this.width = canvas.getWidth();
 		this.height = canvas.getHeight();
-		canvas.scale(this.boardData.getScale(),
-					 this.boardData.getScale(),
-					 this.width/2,this.height/2);
+		float scaleX = this.width/(boardData.getDistOriginX()*2);
+		float scaleY = this.height/(boardData.getDistOriginY()*2);
+		float scale = scaleX < scaleY ? scaleX : scaleY;
+		canvas.scale(scale, scale, this.width/2, this.height/2);
 		canvas.translate(this.width/2, this.height/2);
 		canvas.drawColor(Color.BLACK);
 
