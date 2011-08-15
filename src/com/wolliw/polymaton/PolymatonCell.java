@@ -77,7 +77,13 @@ public class PolymatonCell extends Path {
 		this.alive = false;
 	}
 
-	// Retrieve the current Paint based on cell state
+	// Set/Get the cell's paint
+	public void setPaintLive(Paint p) {
+		this.paintLive = p;
+	}
+	public void setPaintDead(Paint p) {
+		this.paintDead = p;
+	}
 	public Paint getPaint() {
 		if (this.alive)
 			return this.paintLive;

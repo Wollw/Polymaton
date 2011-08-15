@@ -1,8 +1,11 @@
 package com.wolliw.polymaton;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Environment;
 import android.util.Log;
+
 
 import org.json.JSONObject;
 import org.json.JSONArray;
@@ -36,6 +39,9 @@ public class BoardData {
 	private Float min_y = new Float(0.0);
 	private int speed_bpm = 100;
 
+	private Paint borderPaint = null;
+	private int bgColor = 0;
+
 	private ArrayList<Boolean> rulesBorn = null;
 	private ArrayList<Boolean> rulesSurvive = null;
 	private HashMap<Integer,Boolean> initialState = null;
@@ -47,6 +53,11 @@ public class BoardData {
 		Log.d("Poly",filePath);
 		File file = new File(filePath);
 		String readLine = null;
+
+		// Set default paint for board to black
+        this.borderPaint = new Paint();
+        this.borderPaint.setColor(Color.BLACK);
+		this.bgColor = Color.rgb(0,0,0);
 
 		// read the file into a string buffer
 		StringBuffer buf = new StringBuffer();
@@ -115,6 +126,36 @@ public class BoardData {
 				Log.d("Poly",initialState.toString());
 			}
 
+			// Load paints
+			if (jsonObj.has("color_board")) {
+				JSONArray ja = jsonObj.getJSONArray("color_board");
+				this.bgColor = Color.rgb(ja.getInt(0),
+											 ja.getInt(1),
+											 ja.getInt(2));
+			}
+			if (jsonObj.has("color_border")) {
+				JSONArray ja = jsonObj.getJSONArray("color_border");
+				this.borderPaint.setColor(Color.rgb(ja.getInt(0),
+											 ja.getInt(1),
+											 ja.getInt(2)));
+			}
+			Paint paintLive = null;
+			if (jsonObj.has("color_live")) {
+				JSONArray ja = jsonObj.getJSONArray("color_live");
+				paintLive = new Paint();
+				paintLive.setColor(Color.rgb(ja.getInt(0),
+											 ja.getInt(1),
+											 ja.getInt(2)));
+			}
+			Paint paintDead = null;
+			if (jsonObj.has("color_dead")) {
+				JSONArray ja = jsonObj.getJSONArray("color_dead");
+				paintDead = new Paint();
+				paintDead.setColor(Color.rgb(ja.getInt(0),
+											 ja.getInt(1),
+											 ja.getInt(2)));
+			}
+
 			// load the cells' data
 			JSONArray jsonCellArray = null;
 			for (int i = 0; i < jsonArr.length(); i++) {
@@ -164,6 +205,13 @@ public class BoardData {
 				// Create the cell
 				cells.put(new Integer(id),new PolymatonCell(points,neighbors));
 
+				// If there are custom paints apply them
+				if (paintLive != null) 
+					this.getCell(id).setPaintLive(paintLive);
+				if (paintDead != null)
+					this.getCell(id).setPaintDead(paintDead);
+
+				// If it starts out alive make it so
 				if (initialState != null)
 					if (initialState.get(id))
 						this.getCell(id).makeLive();
@@ -183,6 +231,15 @@ public class BoardData {
 		this.distFromOriginY = Math.abs(this.min_y) > Math.abs(this.max_y)
 								? Math.abs(this.min_y) : Math.abs(this.max_y);
 
+	}
+
+	// get the board's stroke paint
+	public Paint getBorderPaint() {
+		return borderPaint;
+	}
+	// get the board's background color
+	public int getBackgroundColor() {
+		return bgColor;
 	}
 
 	// Get the dimensions of the board (distance between extremes of

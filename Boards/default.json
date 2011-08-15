@@ -1,6 +1,10 @@
 {
 	"name": "Pentamaton Donut #1",
 	"scale": 0.7,
+	"color_board": [0,0,0],
+	"color_border": [255,255,255],
+	"color_live": [68,175,251],
+	"color_dead": [64,64,64],
 	"speed_bpm": 120,
 	"rules_survive": [false,true,false,false,true,true,false,true,false,false,false],
 	"rules_born": [true,false,true,false,true,false,true,false,false,false,false],

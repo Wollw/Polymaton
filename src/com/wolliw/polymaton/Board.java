@@ -17,7 +17,9 @@ public class Board extends SurfaceView implements SurfaceHolder.Callback
 {
 	private BoardData boardData = null;
 
-	private Paint paintBorder = null;
+	private Paint borderPaint = null;
+	private int bgColor = 0;
+
 	private UpdateThread thread = null;
 
 	private HashMap<Integer,PolymatonCell> cellsToDraw = null;
@@ -32,12 +34,13 @@ public class Board extends SurfaceView implements SurfaceHolder.Callback
 
 		this.boardData = new BoardData(ctx, "default.json");
 
-		this.paintBorder = new Paint();
-		this.paintBorder.setColor(Color.BLACK);
-		this.paintBorder.setAntiAlias(true);
-		this.paintBorder.setDither(true);
-		this.paintBorder.setStyle(Paint.Style.STROKE);
-		this.paintBorder.setStrokeWidth(3);
+		this.bgColor = this.boardData.getBackgroundColor();
+
+		this.borderPaint = this.boardData.getBorderPaint();
+		this.borderPaint.setAntiAlias(true);
+		this.borderPaint.setDither(true);
+		this.borderPaint.setStyle(Paint.Style.STROKE);
+		this.borderPaint.setStrokeWidth(3);
 
 		
 		getHolder().addCallback(this);
@@ -106,13 +109,13 @@ public class Board extends SurfaceView implements SurfaceHolder.Callback
 		float scale = scaleX < scaleY ? scaleX : scaleY;
 		canvas.scale(scale, scale, this.width/2, this.height/2);
 		canvas.translate(this.width/2, this.height/2);
-		canvas.drawColor(Color.BLACK);
+		canvas.drawColor(this.bgColor);
 
 		cellsToDraw = this.boardData.getCells();
 		for (int i : cellsToDraw.keySet()) {
 			canvas.drawPath(this.boardData.getCell(i),
 							this.boardData.getCell(i).getPaint());
-			canvas.drawPath(this.boardData.getCell(i), paintBorder);
+			canvas.drawPath(this.boardData.getCell(i), this.borderPaint);
 							
 		}
 	}
