@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="main_menu_config_colors">Colors</string>
-    <string name="main_menu_pick_board">Colors</string>
+    <string name="main_menu_pick_board">Boards</string>
     <string name="main_menu_config_speed">Speed</string>
     <string name="main_menu_pause">Pause</string>
     <string name="main_menu_play">Play</string>

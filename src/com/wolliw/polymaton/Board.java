@@ -29,10 +29,10 @@ public class Board extends SurfaceView implements SurfaceHolder.Callback
 	private int width = 0;
 	private int height = 0;
 
-	public Board(Context ctx) {
+	public Board(Context ctx, String fileName) {
 		super(ctx);
 
-		this.boardData = new BoardData(ctx, "default.json");
+		this.boardData = new BoardData(ctx, fileName);
 
 		this.bgColor = this.boardData.getBackgroundColor();
 

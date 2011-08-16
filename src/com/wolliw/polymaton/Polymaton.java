@@ -3,6 +3,7 @@ package com.wolliw.polymaton;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -24,9 +25,19 @@ public class Polymaton extends Activity
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
+
+		// Check for a board file path to open
+		String fileName = "default.json";
+		Bundle e = getIntent().getExtras();
+		if (e != null) {
+			if (e.getString("file_path") != null)
+				fileName = e.getString("file_path");
+		}
+		android.util.Log.d("Poly",fileName);
+
 		super.onCreate(savedInstanceState);
 
-		board = new Board(this);
+		board = new Board(this,fileName);
 		setContentView(board);
 	}
 
@@ -65,6 +76,10 @@ public class Polymaton extends Activity
 	public boolean onOptionsItemSelected(MenuItem item) {
 	// Handle item selection
 		switch (item.getItemId()) {
+			case R.id.pick_board:
+				Intent i = new Intent(this, BoardListActivity.class);
+				startActivity(i);
+				return true;
 			case R.id.pause_play_simulator:
 				board.pauseUnpause();
 				return true;

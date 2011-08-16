@@ -2,6 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/pick_board"
           android:title="@string/main_menu_pick_board" />
+    <item android:id="@+id/config_colors"
+          android:title="@string/main_menu_config_colors" />
     <item android:id="@+id/config_speed"
           android:title="@string/main_menu_config_speed" />
     <item android:id="@+id/pause_play_simulator"

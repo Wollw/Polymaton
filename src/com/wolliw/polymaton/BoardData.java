@@ -47,17 +47,17 @@ public class BoardData {
 	private HashMap<Integer,Boolean> initialState = null;
 
 	public BoardData(Context ctx, String fileName) {
+		// Set default paint for board to black
+        this.borderPaint = new Paint();
+        this.borderPaint.setColor(Color.BLACK);
+		this.bgColor = Color.rgb(0,0,0);
+
 		// Open stream for board's data file
 		String baseDir = Environment.getExternalStorageDirectory().getAbsolutePath();
 		String filePath = baseDir+File.separator+"Polymaton/"+fileName;
 		Log.d("Poly",filePath);
 		File file = new File(filePath);
 		String readLine = null;
-
-		// Set default paint for board to black
-        this.borderPaint = new Paint();
-        this.borderPaint.setColor(Color.BLACK);
-		this.bgColor = Color.rgb(0,0,0);
 
 		// read the file into a string buffer
 		StringBuffer buf = new StringBuffer();
