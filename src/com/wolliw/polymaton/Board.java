@@ -17,8 +17,6 @@ public class Board extends SurfaceView implements SurfaceHolder.Callback
 {
 	private BoardData boardData = null;
 
-	private int bgColor = 0;
-
 	private UpdateThread thread = null;
 
 	private HashMap<Integer,PolymatonCell> cellsToDraw = null;
@@ -32,8 +30,6 @@ public class Board extends SurfaceView implements SurfaceHolder.Callback
 		super(ctx);
 
 		this.boardData = new BoardData(ctx, fileName);
-
-		this.bgColor = this.boardData.getBackgroundColor();
 
 		getHolder().addCallback(this);
 
@@ -101,7 +97,7 @@ public class Board extends SurfaceView implements SurfaceHolder.Callback
 		float scale = scaleX < scaleY ? scaleX : scaleY;
 		canvas.scale(scale, scale, this.width/2, this.height/2);
 		canvas.translate(this.width/2, this.height/2);
-		canvas.drawColor(this.bgColor);
+		canvas.drawColor(this.boardData.getBackgroundColor());
 
 		cellsToDraw = this.boardData.getCells();
 		for (int i : cellsToDraw.keySet()) {
