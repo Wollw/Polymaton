@@ -17,7 +17,6 @@ public class Board extends SurfaceView implements SurfaceHolder.Callback
 {
 	private BoardData boardData = null;
 
-	private Paint borderPaint = null;
 	private int bgColor = 0;
 
 	private UpdateThread thread = null;
@@ -36,13 +35,6 @@ public class Board extends SurfaceView implements SurfaceHolder.Callback
 
 		this.bgColor = this.boardData.getBackgroundColor();
 
-		this.borderPaint = this.boardData.getBorderPaint();
-		this.borderPaint.setAntiAlias(true);
-		this.borderPaint.setDither(true);
-		this.borderPaint.setStyle(Paint.Style.STROKE);
-		this.borderPaint.setStrokeWidth(3);
-
-		
 		getHolder().addCallback(this);
 
 	}
@@ -115,7 +107,8 @@ public class Board extends SurfaceView implements SurfaceHolder.Callback
 		for (int i : cellsToDraw.keySet()) {
 			canvas.drawPath(this.boardData.getCell(i),
 							this.boardData.getCell(i).getPaint());
-			canvas.drawPath(this.boardData.getCell(i), this.borderPaint);
+			canvas.drawPath(this.boardData.getCell(i),
+							this.boardData.getBorderPaint());
 							
 		}
 	}

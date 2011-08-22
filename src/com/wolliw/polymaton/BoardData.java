@@ -50,6 +50,10 @@ public class BoardData {
 		// Set default paint for board to black
         this.borderPaint = new Paint();
         this.borderPaint.setColor(Color.BLACK);
+		this.borderPaint.setAntiAlias(true);
+		this.borderPaint.setDither(true);
+		this.borderPaint.setStyle(Paint.Style.STROKE);
+
 		this.bgColor = Color.rgb(0,0,0);
 
 		// Open stream for board's data file
@@ -139,6 +143,11 @@ public class BoardData {
 											 ja.getInt(1),
 											 ja.getInt(2)));
 			}
+			if (jsonObj.has("stroke_size")) {
+				Double dbl = new Double(jsonObj.getDouble("stroke_size"));
+				float size = dbl.floatValue();
+				this.borderPaint.setStrokeWidth(size);
+			}
 			Paint paintLive = null;
 			if (jsonObj.has("color_live")) {
 				JSONArray ja = jsonObj.getJSONArray("color_live");
@@ -173,7 +182,9 @@ public class BoardData {
 				int len = jsonCellArray.length();
 				ArrayList<Float> points = new ArrayList<Float>();
 				for (int j = 0; j < len; j++) {
-					Float f = new Float(new Double(jsonCellArray.getDouble(j)).floatValue());
+					Float f = new Float(
+						new Double(
+							jsonCellArray.getDouble(j)).floatValue());
 					points.add(f);
 					
 					// keep track of max and min x and y values for scaling
