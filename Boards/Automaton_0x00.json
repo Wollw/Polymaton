@@ -6,6 +6,8 @@
 	"color_border": [0,0,0],
 	"color_live": [255,255,255],
 	"color_dead": [64,64,64],
+	"color_text": [0,128,255],
+	"text_size": 0.25,
 
 	"speed_bpm": 70,
 

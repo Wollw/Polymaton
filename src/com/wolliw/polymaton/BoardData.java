@@ -46,6 +46,8 @@ public class BoardData {
 	private ArrayList<Boolean> rulesSurvive = null;
 	private HashMap<Integer,Boolean> initialState = null;
 
+	private Paint textPaint;
+
 	public BoardData(Context ctx, String fileName) {
 		// Set default paint for board to black
         this.borderPaint = new Paint();
@@ -53,6 +55,12 @@ public class BoardData {
 		this.borderPaint.setAntiAlias(true);
 		this.borderPaint.setDither(true);
 		this.borderPaint.setStyle(Paint.Style.STROKE);
+
+		// default text paint
+		this.textPaint = new Paint();
+		this.textPaint.setColor(Color.BLACK);
+		this.textPaint.setStyle(Paint.Style.FILL);
+		this.textPaint.setTextSize(1.0f);
 
 		this.bgColor = Color.rgb(0,0,0);
 
@@ -136,6 +144,14 @@ public class BoardData {
 				this.bgColor = Color.rgb(ja.getInt(0),
 											 ja.getInt(1),
 											 ja.getInt(2));
+			}
+			if (jsonObj.has("color_text")) {
+				JSONArray ja = jsonObj.getJSONArray("color_text");
+				this.textPaint.setColor(Color.rgb(ja.getInt(0),ja.getInt(1),ja.getInt(2)));
+			}
+			if (jsonObj.has("text_size")) {
+				Double s = jsonObj.getDouble("text_size");
+				this.textPaint.setTextSize(s.floatValue());
 			}
 			if (jsonObj.has("color_border")) {
 				JSONArray ja = jsonObj.getJSONArray("color_border");
@@ -259,6 +275,10 @@ public class BoardData {
 	// get the board's background color
 	public int getBackgroundColor() {
 		return bgColor;
+	}
+	// return the text color
+	public Paint getTextPaint() {
+		return textPaint;
 	}
 
 	// Get the dimensions of the board (distance between extremes of

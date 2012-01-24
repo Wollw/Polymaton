@@ -112,21 +112,19 @@ public class Board extends SurfaceView implements SurfaceHolder.Callback
 		canvas.translate(this.width/2, this.height/2);
 		canvas.drawColor(this.boardData.getBackgroundColor());
 
-		Paint textPaint = new Paint();
-		textPaint.set(this.boardData.getBorderPaint());
-		textPaint.setTextSize(0.2f);
-		textPaint.setStyle(Style.FILL);
 		cellsToDraw = this.boardData.getCells();
 		for (int i : cellsToDraw.keySet()) {
 			canvas.drawPath(this.boardData.getCell(i),
 							this.boardData.getCell(i).getPaint());
 			canvas.drawPath(this.boardData.getCell(i),
 							this.boardData.getBorderPaint());
+		}
+		for (int i : cellsToDraw.keySet()) {
 			if (this.showCellIDs) {
 				canvas.drawText(this.boardData.getCell(i).getName(),
 								this.boardData.getCell(i).getCenterX(),
 								this.boardData.getCell(i).getCenterY(),
-								textPaint);
+								this.boardData.getTextPaint());
 			}
 		}
 	}
