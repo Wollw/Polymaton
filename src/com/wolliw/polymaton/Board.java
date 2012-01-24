@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.Style;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -22,6 +23,7 @@ public class Board extends SurfaceView implements SurfaceHolder.Callback
 	private HashMap<Integer,PolymatonCell> cellsToDraw = null;
 
 	private boolean paused = true;
+	private boolean showCellIDs = false;
 
 	private int width = 0;
 	private int height = 0;
@@ -80,6 +82,17 @@ public class Board extends SurfaceView implements SurfaceHolder.Callback
 	public boolean isPaused() {
 		return this.paused;
 	}
+
+	// toggle between overlaying cell names/ids or not
+	public void toggleShowIDs() {
+		if (this.showCellIDs)
+			this.showCellIDs = false;
+		else
+			this.showCellIDs = true;
+	}
+	public boolean isShowingIDs() {
+		return this.showCellIDs;
+	}
 	
 	// methods for getings/setting the beats per minute
 	public int getBPM() {
@@ -99,13 +112,22 @@ public class Board extends SurfaceView implements SurfaceHolder.Callback
 		canvas.translate(this.width/2, this.height/2);
 		canvas.drawColor(this.boardData.getBackgroundColor());
 
+		Paint textPaint = new Paint();
+		textPaint.set(this.boardData.getBorderPaint());
+		textPaint.setTextSize(0.2f);
+		textPaint.setStyle(Style.FILL);
 		cellsToDraw = this.boardData.getCells();
 		for (int i : cellsToDraw.keySet()) {
 			canvas.drawPath(this.boardData.getCell(i),
 							this.boardData.getCell(i).getPaint());
 			canvas.drawPath(this.boardData.getCell(i),
 							this.boardData.getBorderPaint());
-							
+			if (this.showCellIDs) {
+				canvas.drawText(this.boardData.getCell(i).getName(),
+								this.boardData.getCell(i).getCenterX(),
+								this.boardData.getCell(i).getCenterY(),
+								textPaint);
+			}
 		}
 	}
 

@@ -12,6 +12,11 @@ public class PolymatonCell extends Path {
 	private Paint paintLive = null;
 	private Paint paintDead = null;
 
+	private float centerX;
+	private float centerY;
+
+	private String cellName;
+
 	private ArrayList<Integer> neighbors = null;
 
 	public PolymatonCell(ArrayList<Float> p, ArrayList<Integer> n) {
@@ -29,8 +34,10 @@ public class PolymatonCell extends Path {
 		//this.paintDead.setStyle(Paint.Style.FILL_AND_STROKE);
 		//this.paintDead.setStrokeWidth(5);
 
-		// Add the points to this object's internal points array
+		// Add the points to this object's internal points array and calc center point
 		for (int i = 0; i < p.size(); i+=2) {
+			centerX += p.get(i);
+			centerY += p.get(i+1);
 			if (i == 0) {
 				this.moveTo(p.get(i),p.get(i+1));
 			}
@@ -39,6 +46,8 @@ public class PolymatonCell extends Path {
 			}
 		}
 		this.lineTo(p.get(0),p.get(1));
+		centerX /= p.size()/2;
+		centerY /= p.size()/2;
 	
 		// Add the neighboring cell ids to the neighbor list
 		neighbors = new ArrayList<Integer>();
@@ -89,6 +98,20 @@ public class PolymatonCell extends Path {
 			return this.paintLive;
 		else
 			return this.paintDead;
+	}
+
+	public void setName(String name) {
+		cellName = name;
+	}
+	public String getName() {
+		return cellName;
+	}
+
+	public float getCenterX() {
+		return centerX;
+	}
+	public float getCenterY() {
+		return centerY;
 	}
 
 }

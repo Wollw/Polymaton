@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.MotionEvent;
 import android.widget.LinearLayout;
 import android.widget.EditText;
 
@@ -69,6 +70,13 @@ public class Polymaton extends Activity
 		else
 			mi.setTitle(R.string.main_menu_pause);
 
+		// show right show/hide id text
+		mi = menu.findItem(R.id.config_show_hide_ids);
+		if (board.isShowingIDs())
+			mi.setTitle(R.string.main_menu_config_hide_ids);
+		else
+			mi.setTitle(R.string.main_menu_config_show_ids);
+
 		return true;
 	}
 
@@ -85,6 +93,9 @@ public class Polymaton extends Activity
 				return true;
 			case R.id.config_speed:
 				showDialog(DIALOG_SETSPEED);
+				return true;
+			case R.id.config_show_hide_ids:
+				board.toggleShowIDs();
 				return true;
 			default:
 				return super.onOptionsItemSelected(item);
@@ -122,6 +133,5 @@ public class Polymaton extends Activity
 				dismissDialog(DIALOG_SETSPEED);
 		}
 	}
-
 
 }

@@ -4,6 +4,8 @@
           android:title="@string/main_menu_pick_board" />
     <item android:id="@+id/config_speed"
           android:title="@string/main_menu_config_speed" />
+    <item android:id="@+id/config_show_hide_ids"
+          android:title="@string/main_menu_config_show_ids" />
     <item android:id="@+id/pause_play_simulator"
           android:title="@string/main_menu_pause" />
 </menu>

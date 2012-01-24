@@ -5,5 +5,7 @@
     <string name="main_menu_config_speed">Speed</string>
     <string name="main_menu_pause">Pause</string>
     <string name="main_menu_play">Play</string>
+	<string name="main_menu_config_show_ids">Show ID</string>
+	<string name="main_menu_config_hide_ids">Hide ID</string>
 </resources>
 

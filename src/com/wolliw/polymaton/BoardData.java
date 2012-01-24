@@ -222,6 +222,14 @@ public class BoardData {
 				if (paintDead != null)
 					this.getCell(id).setPaintDead(paintDead);
 
+				// set the name of the cell if there is one or use id as name
+				if (jsonCellObj.has("name")) {
+					this.getCell(id).setName(jsonCellObj.getString("name"));
+				} else {
+					this.getCell(id).setName(""+id);
+				}
+				Log.d("name",this.getCell(id).getName());
+
 				// If it starts out alive make it so
 				if (initialState != null)
 					if (initialState.get(id))
