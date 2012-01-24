@@ -17,7 +17,7 @@ public class PolymatonCell extends Path {
 	public PolymatonCell(ArrayList<Float> p, ArrayList<Integer> n) {
 		// Setup paints
 		this.paintLive = new Paint();
-		this.paintLive.setColor(Color.rgb(0xD1,0xE2,0x31));
+		this.paintLive.setColor(Color.WHITE);
 		//this.paintLive.setAntiAlias(true);
 		this.paintLive.setDither(true);
 		//this.paintLive.setStyle(Paint.Style.FILL_AND_STROKE);
