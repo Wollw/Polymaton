@@ -12,7 +12,7 @@ public class SetSpeedDialog extends Dialog {
 	
 	private Board board;
 	final private EditText et;
-	private Integer bpm;
+	private Integer speed;
 	private Context mContext;
 
 
@@ -21,13 +21,13 @@ public class SetSpeedDialog extends Dialog {
 		mContext = context;
 
 		this.board = board;
-		this.bpm = new Integer(this.board.getBPM());
+		this.speed = new Integer(this.board.getSpeed());
 
 		this.setContentView(R.layout.dialog_setspeed);
-		this.setTitle("Beats Per Minute");
+		this.setTitle("Speed in MS");
 
 		this.et = (EditText) this.findViewById(R.id.dialog_setspeed_edittext);
-		this.et.setText(bpm.toString());
+		this.et.setText(speed.toString());
 
 	}
 

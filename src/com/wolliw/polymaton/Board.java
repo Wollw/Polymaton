@@ -95,11 +95,11 @@ public class Board extends SurfaceView implements SurfaceHolder.Callback
 	}
 	
 	// methods for getings/setting the beats per minute
-	public int getBPM() {
-		return this.boardData.getBPM();
+	public int getSpeed() {
+		return this.boardData.getSpeed();
 	}
-	public void setBPM(int bpm) {
-		this.boardData.setBPM(bpm);
+	public void setSpeed(int speed) {
+		this.boardData.setSpeed(speed);
 	}
 
 	public void onDraw(Canvas canvas) {

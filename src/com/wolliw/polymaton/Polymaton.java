@@ -122,11 +122,11 @@ public class Polymaton extends Activity
 				LinearLayout ll = (LinearLayout) v.getParent();
 				EditText et = (EditText) ll.findViewById(R.id.dialog_setspeed_edittext);
 				if (et.getText().toString().compareTo("") != 0) {
-					int bpm = Integer.parseInt(et.getText().toString());
-					if (bpm > 1)
-						board.setBPM(bpm);
+					int speed = Integer.parseInt(et.getText().toString());
+					if (speed > 1)
+						board.setSpeed(speed);
 					else
-						board.setBPM(0);
+						board.setSpeed(0);
 				}
 				board.stopUpdateThread();
 				board.startUpdateThread();

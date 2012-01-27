@@ -1,5 +1,4 @@
 {
-
 	"name": "Automaton 0x00",
 
 	"color_board": [128,128,128],
@@ -9,7 +8,7 @@
 	"color_text": [0,128,255],
 	"text_size": 0.25,
 
-	"speed_bpm": 70,
+	"speed_ms": 1000,
 
 	"rules_survive": [
 		false,	true,	false,	false,

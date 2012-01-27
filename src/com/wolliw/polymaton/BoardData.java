@@ -37,7 +37,7 @@ public class BoardData {
 	private Float min_x = new Float(0.0);
 	private Float max_y = new Float(0.0);
 	private Float min_y = new Float(0.0);
-	private int speed_bpm = 100;
+	private int speed_ms = 1000;
 
 	private Paint borderPaint = null;
 	private int bgColor = 0;
@@ -101,8 +101,8 @@ public class BoardData {
 				this.scale = new Float(s.floatValue());
 			}
 			// get speed if defined
-			if (jsonObj.has("speed_bpm")) {
-				this.speed_bpm = jsonObj.getInt("speed_bpm");
+			if (jsonObj.has("speed_ms")) {
+				this.speed_ms = jsonObj.getInt("speed_ms");
 			}
 			
 			// load the rules
@@ -358,11 +358,11 @@ public class BoardData {
 
 
 	//methods for gettings/setting beats per minute
-	public int getBPM() {
-		return this.speed_bpm;
+	public int getSpeed() {
+		return this.speed_ms;
 	}
-	public void setBPM(int bpm) {
-		this.speed_bpm = bpm;
+	public void setSpeed(int ms) {
+		this.speed_ms = ms;
 	}
 
 	// return a copy (i think?) of the internal cell HashMap 
