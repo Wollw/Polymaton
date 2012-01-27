@@ -16,6 +16,7 @@ public class UpdateThread extends Thread {
 		super();
 		this.board = board;
 		this.surfaceHolder = board.getHolder();
+		Log.d("Poly","Constructing Thread");
 	}
 
 	public void startThread() {
@@ -42,13 +43,13 @@ public class UpdateThread extends Thread {
 				ms_last = ms;
 				board.updateState();
 			}
-				c = surfaceHolder.lockCanvas();
-				synchronized (surfaceHolder) {
-					if (c != null) {
-						// Change live/dead state of cells
-						board.onDraw(c);
-					}
+			c = surfaceHolder.lockCanvas();
+			synchronized (surfaceHolder) {
+				if (c != null) {
+					// Change live/dead state of cells
+					board.onDraw(c);
 				}
+			}
 			// Do this finally to keep Surface from
 			// being in inconsistent state due to an exception
 			if (c != null) {

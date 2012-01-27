@@ -34,12 +34,15 @@ public class Polymaton extends Activity
 			if (e.getString("file_path") != null)
 				fileName = e.getString("file_path");
 		}
-		android.util.Log.d("Poly",fileName);
+		Log.d("Poly",fileName);
 
 		super.onCreate(savedInstanceState);
 
 		board = new Board(this,fileName);
+
+		Log.d("Poly","Setting content view.");
 		setContentView(board);
+		Log.d("Poly","Set content view.");
 	}
 
 	@Override
