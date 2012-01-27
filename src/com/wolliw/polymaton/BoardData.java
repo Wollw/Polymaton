@@ -60,6 +60,7 @@ public class BoardData {
 		this.textPaint = new Paint();
 		this.textPaint.setColor(Color.BLACK);
 		this.textPaint.setStyle(Paint.Style.FILL);
+		this.textPaint.setTextAlign(Paint.Align.CENTER);
 		this.textPaint.setTextSize(1.0f);
 
 		this.bgColor = Color.rgb(0,0,0);
