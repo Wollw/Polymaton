@@ -40,7 +40,6 @@ public class UpdateThread extends Thread {
 			if (ms - ms_last > this.board.getSpeed()) {
 				long t = ms - ms_last;
 				ms_last = ms;
-				android.util.Log.d("t",""+t);
 				board.updateState();
 			}
 				c = surfaceHolder.lockCanvas();
