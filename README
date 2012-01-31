@@ -1,4 +1,8 @@
-Opens the file default.json in the "Polymaton" directory on the sdcard at launch.
-Examples boards can be found in the "Boards" directory.
-Birth rules, survival rules, and initial board state can be set in the board files.
-All boards are in json format.
+When launched Polymaton looks in the "Polymaton" folder in the root of the
+sdcard (or equivalent) for json files defining automaton's settings.  The
+path is probably going to be "/sdcard/Polymaton" and sample boards can be
+found in the "Boards" directory in this repository.
+
+Right now the program is behaving very slowly when loading boards sometimes
+and other times it loads boards instantly.  I'm not sure why this is yet
+and haven't really looked into it too much but it is a known issue.
