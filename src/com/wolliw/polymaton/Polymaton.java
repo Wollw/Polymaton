@@ -14,8 +14,7 @@ import android.view.MotionEvent;
 import android.widget.LinearLayout;
 import android.widget.EditText;
 
-public class Polymaton extends Activity
-{
+public class Polymaton extends Activity {
 	private Board board;
 
 	// Dialogs for option menu

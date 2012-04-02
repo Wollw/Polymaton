@@ -36,25 +36,24 @@ public class UpdateThread extends Thread {
 	public void run() {
 		Canvas c = null;
 		while (running) {
-			c = null;
-			long ms = SystemClock.uptimeMillis();
-			if (ms - ms_last > this.board.getSpeed()) {
-				long t = ms - ms_last;
-				ms_last = ms;
-				board.updateState();
-			}
 			c = surfaceHolder.lockCanvas();
-			synchronized (surfaceHolder) {
-				if (c != null) {
-					// Change live/dead state of cells
-					board.onDraw(c);
-				}
-			}
-			// Do this finally to keep Surface from
-			// being in inconsistent state due to an exception
 			if (c != null) {
+				long ms = SystemClock.uptimeMillis();
+				if (ms - ms_last > this.board.getSpeed()) {
+					long t = ms - ms_last;
+					ms_last = ms;
+					board.updateState();
+				}
+				synchronized (surfaceHolder) {
+					if (c != null) {
+						// Change live/dead state of cells
+						board.onDraw(c);
+					}
+				}
+				// Do this finally to keep Surface from
+				// being in inconsistent state due to an exception
 				surfaceHolder.unlockCanvasAndPost(c);
-			}
+			} 
 		}
 	}
 
